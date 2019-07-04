@@ -11,7 +11,7 @@ else:
     print ('Events already exist')
 if os.path.exists(os.path.dirname(genomefadir)+'/genome_db.nin'):pass
 else:
-    if genomefadir.endswith('gz'):os.system('gunzip -c %s > %s'%(genomefadir,genomefadir.strip('.gz')))
+    if genomefadir.endswith('gz'):os.system('gunzip -c %s > %s'%(genomefadir,genomefadir.rstrip('.gz')))
     os.system('makeblastdb -in %s -out %s -parse_seqids -dbtype nucl'%(genomefadir.rstrip('.gz'),os.path.dirname(genomefadir)+'/genome_db'))
     print ('makeblastdb -in %s -out %s -parse_seqids -dbtype nucl'%(genomefadir.rstrip('.gz'),os.path.dirname(genomefadir)+'/genome_db'))
 genomedb=os.path.dirname(genomefadir)+'/genome_db'
