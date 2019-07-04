@@ -1,0 +1,14 @@
+event	gene_is_diff	du_pvalue	nb_splice	clipped_3p	is_mapped	nb_snv	exonic	intronic	nb_hit	contig_size	is_chimeric	abs(start-end)	other
+splice			>0		==T				==1			<10000	!is.na(gene_id)
+splice_DU		<0.01	>0		==T				==1			<10000	!is.na(gene_id)
+polyA					==T				==1				((clipped_3p>5 & grepl('(AATAAA|ATTAAA|AGTAAA|TATAAA|CATAAA|GATAAA|AATATA|AATACA|AATAGA|ACTAAA).*AAAAA$',contig))|(clipped_5p>5 & grepl('^TTTTT.*(TTTATT|TTTAAT|TTTACT|TTTATA|TTTATG|TTTATC|TATATT|TGTATT|TCTATT|TTTAGT)',contig)))
+polyA_DU		<0.01			==T				==1				(!is.na(gene_id) & ((clipped_3p>5 & grepl('(AATAAA|ATTAAA|AGTAAA|TATAAA|CATAAA|GATAAA|AATATA|AATACA|AATAGA|ACTAAA).*AAAAA$',contig))|(clipped_5p>5 & grepl('^TTTTT.*(TTTATT|TTTAAT|TTTACT|TTTATA|TTTATG|TTTATC|TATATT|TGTATT|TCTATT|TTTAGT)',contig))))
+antisense					==T				==1	>200			(is.na(gene_id)&!is.na(as_gene_id))
+lincRNA					==T				==1	>200			(is.na(gene_id)&is.na(as_gene_id))
+SNV					==T	>0	==T		==1				(!is.na(gene_id)&is.na(as_gene_id)&(meanA>20|meanB>20))
+SNV_DU		<0.01			==T	>0	==T		==1				(!is.na(gene_id)&is.na(as_gene_id)&(meanA>20|meanB>20))
+intron			==0	==0	==T			==T	==1			<10000	(!is.na(gene_id)&is.na(as_gene_id))
+intron_DU		<0.01	==0	==0	==T			==T	==1			<10000	(!is.na(gene_id)&is.na(as_gene_id))
+repeat	==F				==T				>5	>50			
+split									<3	>60	==T		query_cover<0.8
+unmapped					==F					>50			
