@@ -4,13 +4,13 @@ Exhaustive capture of biological variation in RNA-seq data through k-mer decompo
 
 DE-kupl is a computational protocol that aims to capture all k-mer variation in an input set of RNA-seq libraries. To verify the replicability of DE-kupl, we developed this pipeline to compare the consistency of events between different cohorts. One lung cancer data is downloaded from the TCGA database (https://portal.gdc.cancer.gov/projects/TCGA-LUAD), which consists 58 normal samples and 524 tumor samples. The other lung cancer data is downloaded from the SRA database (https://www.ncbi.nlm.nih.gov/sra?term=ERP001058), which consists 77  paired normal and tumor samples.
 
-##STEP ONE:
+### STEP ONE:
 We firstly ran DEkupl run on both of the two datasets with default parameters. The transcript fasta file we used only contains the principle transcript for each gene so that we can analyze alternative splicing events. 
 
-##STEP TWO:
+### STEP TWO:
 Then we ran DEkupl annotation on the output results from both two datasets. The reference files include the Genome sequence (GRCh38.p12) and annotation file (version 31).
 
-##STEP THREE:
+### STEP THREE:
 We ran this pipeline using the output tables from two datasets gernerated by DEkupl annotation as input.
 
 The criteria for comparing different categories of contigs from two datasets include:
