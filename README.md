@@ -4,6 +4,17 @@ Exhaustive capture of biological variation in RNA-seq data through k-mer decompo
 
 DE-kupl is a computational protocol that aims to capture all k-mer variation in an input set of RNA-seq libraries. To verify the replicability of DE-kupl, we developed this pipeline to compare the consistency of events between different cohorts. One lung cancer data is downloaded from the TCGA database (https://portal.gdc.cancer.gov/projects/TCGA-LUAD), which consists of 58 normal samples and 524 tumor samples. The other lung cancer data is downloaded from the SRA database (https://www.ncbi.nlm.nih.gov/sra?term=ERP001058), which consists of 77  paired normal and tumor samples.
 
+
+## Dependencies
+
+The Detector relies on the following python libraries and R packages: 
+
+- **[numpy](https://www.numpy.org/)** NumPy is the fundamental package for scientific computing with Python. 
+- **[pandas](https://www.pandas.org/)** Pandas is a python library that allows you to easily manipulate data to analyze. 
+- **[limma](http://bioconductor.org/packages/release/bioc/html/limma.html)** Data analysis, linear models and differential expression for microarray data.
+- **[HTSanalyzeR](https://www.bioconductor.org/packages/release/bioc/html/HTSanalyzeR.html)** This package provides classes and methods for gene and contig set enrichment. The over-representation analysis is performed based on hypergeometric tests.
+
+
 - **Step 1: Run dekupl-run**. We first activate the conda environement where dekupl-run was installed, then we run the software. The description of parameters can be found from the repository of DEkupl (https://github.com/Transipedia/dekupl-run)
     ```
     conda install -n dekupl -c transipedia dekupl-run dekupl-annotation 
@@ -23,26 +34,6 @@ DE-kupl is a computational protocol that aims to capture all k-mer variation in 
     ```
     python3 compare_contigs.py DiffContigsInfos_dataset1.tsv DiffContigsInfos_dataset2.tsv dkplrundir_dataset1 dkplrundir_dataset2 genome.fa
     ```
-
-The criteria for comparing different categories of contigs from two datasets include:
-
-- **SNV**: position of SNV 
-- **LincRNA/intron**: position of center of contig +/- 30nt
-- **splice/split**: positions of both splice sites +/-30nt
-- **polyA**: position of 3'end of contig +/- 10nt
-- **unmapped/repeat**: build k-mer contigs and annotate contigs based on sequence alignment.
-
-## Dependencies
-
-The Detector relies on the following python libraries and R packages: 
-
-- **[numpy](https://www.numpy.org/)** NumPy is the fundamental package for scientific computing with Python. 
-- **[pandas](https://www.pandas.org/)** Pandas is a python library that allows you to easily manipulate data to analyze. 
-- **[limma](http://bioconductor.org/packages/release/bioc/html/limma.html)** Data analysis, linear models and differential expression for microarray data.
-- **[HTSanalyzeR](https://www.bioconductor.org/packages/release/bioc/html/HTSanalyzeR.html)** This package provides classes and methods for gene and contig set enrichment. The over-representation analysis is performed based on hypergeometric tests.
-
-
-
 ## Input files
 
 - Table `DiffContigsInfos_dataset1.tsv`, summarizing for each contig, which is the DEkupl annotation output of dataset1.
@@ -61,5 +52,15 @@ The Detector relies on the following python libraries and R packages:
 - Figure `jaccardidx.pdf`, the table showing the comparison between two datasets using the Jaccard index.
 
 - Table  `shared_contigs_dataset_DiffContigInfo.tsv`, the table containing all shared events and corresponding annotation data from each dataset. 
+
+The criteria for comparing different categories of contigs from two datasets include:
+
+- **SNV**: position of SNV 
+- **LincRNA/intron**: position of center of contig +/- 30nt
+- **splice/split**: positions of both splice sites +/-30nt
+- **polyA**: position of 3'end of contig +/- 10nt
+- **unmapped/repeat**: build k-mer contigs and annotate contigs based on sequence alignment.
+
+
 
 
