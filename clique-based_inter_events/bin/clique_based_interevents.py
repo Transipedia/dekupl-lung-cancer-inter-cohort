@@ -7,8 +7,8 @@ import pandas as pd
 import numpy as np
 from networkx.drawing.nx_agraph import graphviz_layout
 def contig_fa(dataset1,dataset2):
-    subprocess.call(r'''less %s|cut -f 3|awk '{print ">all_A_"NR"\n"$1}' > %s/contig_dataset1.fa'''%(dataset1,outdir),shell=True)
-    subprocess.call(r'''less %s|cut -f 3|awk '{print ">all_B_"NR"\n"$1}' > %s/contig_dataset2.fa'''%(dataset2,outdir),shell=True)
+    subprocess.call(r'''less %s|cut -f 3|grep -v contig|awk '{print ">all_A_"NR"\n"$1}' > %s/contig_dataset1.fa'''%(dataset1,outdir),shell=True)
+    subprocess.call(r'''less %s|cut -f 3|grep -v contig|awk '{print ">all_B_"NR"\n"$1}' > %s/contig_dataset2.fa'''%(dataset2,outdir),shell=True)
     fadict={}
     fasta_sequences = SeqIO.parse(open('%s/contig_dataset1.fa'%outdir),'fasta')
     for seq in fasta_sequences:
@@ -26,7 +26,10 @@ def translate(id):
     return fadict[id]
 
 def find_cliques():
-    subprocess.call("./interSeqGraph -k %s -n -A %s -B %s > %s/pairs_contigs.txt 2>/dev/null"%(ksize,'%s/contig_dataset1.fa'%outdir,'%s/contig_dataset2.fa'%outdir,outdir),shell=True)
+    wd=os.path.dirname(sys.argv[0])
+    if wd=='':wd+='./'
+    else:wd+='/'
+    subprocess.call(wd+"./interSeqGraph -k %s -n -A %s -B %s > %s/pairs_contigs.txt 2>/dev/null"%(ksize,'%s/contig_dataset1.fa'%outdir,'%s/contig_dataset2.fa'%outdir,outdir),shell=True)
     dat=pd.read_csv('%s/pairs_contigs.txt'%outdir,header=0,index_col=None,sep='\t')
     dat['A_L']=dat['contig_in_A'].apply(func,1)
     dat['B_L']=dat['contig_in_B'].apply(func,1)
