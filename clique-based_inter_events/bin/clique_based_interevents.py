@@ -6,6 +6,7 @@ import networkx as nx
 import pandas as pd
 import numpy as np
 from networkx.drawing.nx_agraph import graphviz_layout
+#convert contigs to fasta
 def contig_fa(dataset1,dataset2):
     subprocess.call(r'''less %s|cut -f 3|grep -v contig|awk '{print ">all_A_"NR"\n"$1}' > %s/contig_dataset1.fa'''%(dataset1,outdir),shell=True)
     subprocess.call(r'''less %s|cut -f 3|grep -v contig|awk '{print ">all_B_"NR"\n"$1}' > %s/contig_dataset2.fa'''%(dataset2,outdir),shell=True)
@@ -18,27 +19,32 @@ def contig_fa(dataset1,dataset2):
     for seq in fasta_sequences:
         fadict[seq.id]=str(seq.seq)
     return fadict
-
+#return contig length
 def func(id):
     return len(fadict[id])
-
+#extract contigs according to tag
 def translate(id):
     return fadict[id]
-
+#extract cliques from network where nodes are contigs and edges denote sharing kmers
 def find_cliques():
     wd=os.path.dirname(sys.argv[0])
     if wd=='':wd+='./'
     else:wd+='/'
+    #pair contigs with common kmers
     subprocess.call(wd+"./interSeqGraph -k %s -n -A %s -B %s > %s/pairs_contigs.txt 2>/dev/null"%(ksize,'%s/contig_dataset1.fa'%outdir,'%s/contig_dataset2.fa'%outdir,outdir),shell=True)
     dat=pd.read_csv('%s/pairs_contigs.txt'%outdir,header=0,index_col=None,sep='\t')
     dat['A_L']=dat['contig_in_A'].apply(func,1)
     dat['B_L']=dat['contig_in_B'].apply(func,1)
     dat['count']+=30
+    #weight denotes the ratio of common parts between two contigs
     dat['weight']=dat['count']/(dat['A_L']+dat['B_L']-dat['count'])
     del dat['A_L'],dat['B_L'],dat['count']
     dat=dat.sort_values(by=['weight'],ascending=False)
+    #graph_input is the network input file, containing three columns: node1,node2 and weight
     dat.to_csv('%s/graph_input.txt'%outdir,header=False,index=False,sep='\t')
+    #construct network
     G = nx.read_edgelist("%s/graph_input.txt"%outdir,delimiter='\t',nodetype=str, data=(('weight',float),))
+    #comps contain all the cliques mined from the whole network
     comps=nx.find_cliques(G)
     out=open('%s/shared_event.tsv'%outdir,'w')
     out.write('dataset1\tdataset2\n')
@@ -49,7 +55,7 @@ def find_cliques():
     def longest(L):
         length=np.array([len(i) for i in L])
         return L[np.argmax(length)]
-
+    #if multiple contigs exist in the same clique, only the longest contigs from two datasets are retained.
     for clq in comps:
         dist.append(len(clq))
         bagA,bagB=[],[]
